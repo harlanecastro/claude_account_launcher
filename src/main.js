@@ -6,6 +6,8 @@ const path = require('node:path');
 const fs = require('node:fs/promises');
 const { randomUUID } = require('node:crypto');
 const { detectClaude, launch } = require('./launcher');
+const { isAuthenticated } = require('./profile-session');
+const authentication = new Map();
 let win, config, desktop;
 let saveQueue = Promise.resolve();
 const configFile = () => path.join(app.getPath('userData'), 'accounts.json');
@@ -33,7 +35,12 @@ async function launchProfile(id) {
 }
 async function state() {
   const executable = config.executable || await detectClaude(process.platform, app.getPath('home'));
-  return { profiles: config.profiles, executable, platform: process.platform };
+  const profiles = config.profiles.map(entry => {
+    try { authentication.set(entry.id, isAuthenticated(directory(entry.id))); }
+    catch (error) { console.warn('Não foi possível consultar a sessão do perfil:', error.code || error.name); }
+    return { ...entry, authenticated: authentication.get(entry.id) === true };
+  });
+  return { profiles, executable, platform: process.platform };
 }
 function handle(name, fn) {
   ipcMain.handle(name, async (event, ...args) => {

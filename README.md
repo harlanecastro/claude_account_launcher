@@ -22,7 +22,7 @@ O Claude Desktop precisa estar instalado. Os instaladores locais e os gerados pe
 ## Perfis e contas
 
 1. Clique em **Novo perfil**, informe um nome, como Pessoal ou Trabalho, e salve.
-2. Clique em **Abrir Claude** e entre na conta desejada dentro da janela do Claude.
+2. Clique em **Fazer login** e entre na conta desejada dentro da janela do Claude; com a sessão salva, o botão passa a exibir **Abrir Claude**.
 3. Repita o processo para as outras contas.
 
 Cada perfil usa uma pasta de dados própria. O Launcher não pede nem armazena senhas; os dados de autenticação pertencem ao próprio Claude. O perfil padrão já existente no Claude não é importado automaticamente.
@@ -73,7 +73,7 @@ Os arquivos ficam na pasta de dados do usuário do aplicativo:
 
 ## Limitações do Claude Desktop
 
-A abertura usa `--user-data-dir`; a compatibilidade e o isolamento efetivo dependem da versão instalada do Claude. O Launcher solicita a abertura, mas não confirma o login ou o funcionamento interno do Claude.
+A abertura usa `--user-data-dir`; a compatibilidade e o isolamento efetivo dependem da versão instalada do Claude. O Launcher consulta os cookies de sessão locais para alternar entre **Fazer login** e **Abrir Claude**, sem ler ou descriptografar credenciais. Uma janela já aberta no perfil selecionado é trazida para frente; com o Claude fechado, a abertura reutiliza a mesma pasta de sessão. A validade da sessão no servidor é verificada pelo próprio Claude.
 
 No Windows, o retorno de um login Google ou SSO pode alcançar outra instância. Quando disponível, use entrada por e-mail ou código na nova janela. Contas corporativas que exigem SSO continuam sujeitas às limitações do Claude Desktop.
 

@@ -33,7 +33,8 @@ function render(next) {
     const meta = document.createElement('p'); meta.textContent = profile.lastOpened ? 'Última abertura: ' + new Date(profile.lastOpened).toLocaleDateString('pt-BR') : 'Pronto para o primeiro login';
     info.append(title, meta); top.append(avatar, info);
     const bottom = document.createElement('div'); bottom.className = 'card-bottom';
-    bottom.append(button('Abrir Claude', `Abrir Claude: ${profile.name}`, async () => { render(await window.launcher.launch(profile.id)); toast('Abertura solicitada ao Claude.'); }, 'primary'), button('✎', `Renomear ${profile.name}`, () => editor(profile)), button('folder', `Abrir pasta de ${profile.name}`, () => window.launcher.folder(profile.id)), button('×', `Remover ${profile.name}`, async () => render(await window.launcher.remove(profile.id))));
+    const launchText = profile.authenticated ? 'Abrir Claude' : 'Fazer login';
+    bottom.append(button(launchText, `${launchText}: ${profile.name}`, async () => { render(await window.launcher.launch(profile.id)); toast('Abertura solicitada ao Claude.'); }, 'primary'), button('✎', `Renomear ${profile.name}`, () => editor(profile)), button('folder', `Abrir pasta de ${profile.name}`, () => window.launcher.folder(profile.id)), button('×', `Remover ${profile.name}`, async () => render(await window.launcher.remove(profile.id))));
     card.append(top, bottom); $('profiles').append(card);
   });
 }
@@ -45,3 +46,17 @@ $('form').onsubmit = event => { event.preventDefault(); action(async () => { con
 action(async () => render(await window.launcher.state()));
 
 window.launcher.onProfilesChanged(() => action(async () => render(await window.launcher.state())));
+
+let refreshing = false;
+async function refreshSession() {
+  if (document.hidden || refreshing || $('editor').open) return;
+  refreshing = true;
+  try {
+    const next = await window.launcher.state();
+    if (JSON.stringify(next) !== JSON.stringify(state)) render(next);
+  } catch (error) { console.warn(error.message); }
+  finally { refreshing = false; }
+}
+window.addEventListener('focus', refreshSession);
+document.addEventListener('visibilitychange', refreshSession);
+setInterval(refreshSession, 3000);

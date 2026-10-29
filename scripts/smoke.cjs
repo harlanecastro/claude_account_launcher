@@ -10,12 +10,22 @@ ipcMain.handle('add', (_, name) => {state.profiles.push({id:'test',name}); retur
 app.whenReady().then(async () => {
   const win = new BrowserWindow({ show: false, width:1000, height:750, webPreferences: { preload:path.join(__dirname,'../src/preload.js'), contextIsolation: true, sandbox: true } });
   try {
+    require('../src/profile-session');
     await win.loadFile(path.join(__dirname, '../src/index.html'));
     await win.webContents.executeJavaScript(`new Promise(resolve => setTimeout(resolve, 150))`);
     if (!await win.webContents.executeJavaScript(`document.querySelector('.empty') !== null && document.getElementById('toast').hidden`)) throw new Error('Initial render failed');
     await win.webContents.executeJavaScript(`document.getElementById('add').click(); document.getElementById('name').value = 'Trabalho'; document.getElementById('form').requestSubmit(); void 0;`);
     await win.webContents.executeJavaScript(`new Promise(resolve => setTimeout(resolve, 150))`);
     if (!await win.webContents.executeJavaScript(`document.querySelector('.card h2').textContent === 'Trabalho' && !document.getElementById('editor').open`)) throw new Error('Profile creation failed');
+    if (!await win.webContents.executeJavaScript(`document.querySelector('.card .primary').textContent === 'Fazer login'`)) throw new Error('Signed-out profile must offer login');
+    state.profiles[0].authenticated = true;
+    win.webContents.send('profiles-changed');
+    await win.webContents.executeJavaScript(`new Promise(resolve => setTimeout(resolve, 150))`);
+    if (!await win.webContents.executeJavaScript(`document.querySelector('.card .primary').textContent === 'Abrir Claude'`)) throw new Error('Signed-in profile must open Claude');
+    state.profiles[0].authenticated = false;
+    win.webContents.send('profiles-changed');
+    await win.webContents.executeJavaScript(`new Promise(resolve => setTimeout(resolve, 150))`);
+    if (!await win.webContents.executeJavaScript(`document.querySelector('.card .primary').textContent === 'Fazer login'`)) throw new Error('Logout must restore login button');
     fs.mkdirSync(path.join(__dirname,'../dist'),{recursive:true});
     fs.writeFileSync(path.join(__dirname, '../dist/preview.png'), (await win.webContents.capturePage()).toPNG());
     console.log('PASS: real preload IPC, initial render, profile dialog and creation.');

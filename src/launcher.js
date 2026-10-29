@@ -3,6 +3,8 @@ const { execFile, spawn } = require('node:child_process');
 const { promisify } = require('node:util');
 const fs = require('node:fs/promises');
 const run = promisify(execFile);
+const { focusProfile } = require('./focus-profile');
+const opening = new Map();
 
 function launchSpec(platform, executable, directory) {
   if (platform === 'darwin') return { command: '/usr/bin/open', args: ['-n', '-a', executable, '--args', `--user-data-dir=${directory}`] };
@@ -24,6 +26,14 @@ async function detectClaude(platform, home, env = process.env) {
   return null;
 }
 async function launch(platform, executable, directory) {
+  const key = `${platform}:${directory}`;
+  if (opening.has(key)) return opening.get(key);
+  const pending = openProfile(platform, executable, directory);
+  opening.set(key, pending);
+  try { return await pending; } finally { opening.delete(key); }
+}
+async function openProfile(platform, executable, directory) {
+  if (await focusProfile(platform, executable, directory, run)) return;
   await fs.mkdir(directory, { recursive: true });
   const spec = launchSpec(platform, executable, directory);
   if (platform === 'darwin') await run(spec.command, spec.args, { timeout: 20000 });
