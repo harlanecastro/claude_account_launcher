@@ -25,16 +25,16 @@ O Claude Desktop precisa estar instalado. Os instaladores locais e os gerados pe
 2. Clique em **Fazer login** e entre na conta desejada dentro da janela do Claude; com a sessão salva, o botão passa a exibir **Abrir Claude**.
 3. Repita o processo para as outras contas.
 
-Cada perfil usa uma pasta de dados própria. O Launcher não pede nem armazena senhas; os dados de autenticação pertencem ao próprio Claude. O perfil padrão já existente no Claude não é importado automaticamente.
+Apenas uma conta fica aberta por vez. Ao trocar, o Launcher encerra o Claude normalmente, guarda a pasta completa da conta anterior e coloca os dados da selecionada no caminho nativo do Claude. As sessões permanecem salvas; uma conta ainda sem autenticação oferece **Fazer login**. O cartão da conta em execução fica destacado com **● Aberta**; a marca desaparece quando o Claude sai.
 
-O aplicativo procura automaticamente o Claude nas instalações comuns do macOS e do Windows, incluindo pacotes da Microsoft Store. Se necessário, use **Localizar Claude** para selecionar `Claude.app` ou `Claude.exe`.
+Na primeira execução, a conta já existente no Claude é associada ao perfil correspondente. Uma conta importada do modo antigo pode exigir uma verificação inicial do dispositivo na interface oficial do Claude. Os perfis antigos são importados sem excluir seus arquivos. O Launcher não pede senhas nem descriptografa credenciais.
 
 ## Barra do macOS e bandeja do Windows
 
 Clique no símbolo de duas janelas na barra superior do macOS ou na bandeja do Windows para:
 
 - **Abrir aplicativo:** exibir a janela principal.
-- **Abrir [nome do perfil]:** solicitar a abertura daquela instância do Claude sem exibir o Launcher.
+- **Abrir [nome do perfil]:** alternar para aquela conta ou exibir sua janela, sem abrir o Launcher.
 - **Sair:** encerrar o Launcher.
 
 O menu acompanha os perfis criados, renomeados e removidos. No Windows, o sistema pode colocar o ícone na área de ícones ocultos da bandeja; você pode fixá-lo pelas configurações da barra de tarefas.
@@ -67,15 +67,16 @@ Os arquivos ficam na pasta de dados do usuário do aplicativo:
 | --- | --- |
 | `accounts.json` | Nomes, identificadores, última abertura e caminho do Claude |
 | `window-state.json` | Dimensões, posição e estado maximizado da janela |
-| `profiles/<identificador>/` | Dados e sessão do Claude para cada perfil |
+| `profiles/<identificador>/` | Perfis antigos preservados durante a migração |
+| `native-profiles/` | Contas guardadas, associação da pasta nativa e registro de recuperação de trocas |
 
 **Remover perfil** retira a entrada da lista e preserva os arquivos e a sessão. A ação não fecha a janela do Claude nem exclui dados.
 
 ## Limitações do Claude Desktop
 
-A abertura usa `--user-data-dir`; a compatibilidade e o isolamento efetivo dependem da versão instalada do Claude. O Launcher consulta os cookies de sessão locais para alternar entre **Fazer login** e **Abrir Claude**, sem ler ou descriptografar credenciais. Uma janela já aberta no perfil selecionado é trazida para frente; com o Claude fechado, a abertura reutiliza a mesma pasta de sessão. A validade da sessão no servidor é verificada pelo próprio Claude.
+O Claude é aberto normalmente, sem `--user-data-dir`. A conta em uso ocupa a pasta nativa do Claude; as demais ficam guardadas no Launcher. A troca só ocorre depois de confirmar que o Claude encerrou; se ele não sair, os dados não são trocados. Um registro permite recuperar trocas interrompidas na próxima abertura, com o Claude fechado.
 
-No Windows, o retorno de um login Google ou SSO pode alcançar outra instância. Quando disponível, use entrada por e-mail ou código na nova janela. Contas corporativas que exigem SSO continuam sujeitas às limitações do Claude Desktop.
+Os botões **Fazer login** e **Abrir Claude** consultam os cookies locais, sem ler ou descriptografar credenciais; a validade da autenticação e do dispositivo é determinada pelo próprio Claude. Sessões expiradas ou contas importadas que precisem de nova verificação devem ser autenticadas pela interface oficial.
 
 ## Desenvolvimento
 
