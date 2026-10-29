@@ -2,7 +2,7 @@
 
 Aplicativo Electron para macOS e Windows, desenvolvido por **Harlane Castro**, para abrir contas diferentes do Claude Desktop sem usar o terminal.
 
-![Interface do aplicativo](docs/screenshot.png)
+![Interface do aplicativo](docs/screenshot-perfis.png)
 
 ## Instalação
 
