@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'">
+<title>Claude Account Launcher</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="brand"><img class="mark" src="assets/icon.svg" alt="" width="47" height="47"><div>Claude Account Launcher<small>Suas contas, cada uma no seu espaço.</small></div></div><span class="platform" id="platform"></span></header>
+<main>
+<section class="heading"><div><h1>Um espaço para<br>cada conta.</h1><p>Abra o Claude com contas diferentes,<br>lado a lado, sem sair de nenhuma delas.</p></div><button class="primary" id="add">＋ Novo perfil</button></section>
+<section class="installation" aria-label="Instalação do Claude"><span class="dot" id="dot"></span><div><strong id="detected">Procurando o Claude Desktop…</strong><small id="executable"></small></div><button id="choose" class="quiet">Localizar Claude</button></section>
+<section class="profiles" id="profiles" aria-label="Seus perfis"></section>
+<footer>Desenvolvido por Harlane Castro</footer>
+</main>
+<dialog id="editor"><form id="form"><h2 id="dialog-title">Novo perfil</h2><p>Use um nome para identificar sua conta.</p><label for="name">Nome do perfil</label><input id="name" maxlength="50" placeholder="Ex.: Pessoal ou Trabalho" required autocomplete="off"><div class="actions"><button type="button" id="cancel">Cancelar</button><button type="submit" class="primary">Salvar perfil</button></div></form></dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="renderer.js"></script>
+</body></html>

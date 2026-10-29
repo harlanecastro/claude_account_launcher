@@ -1,0 +1,71 @@
+{
+  "name": "claude-account-launcher",
+  "version": "1.0.0",
+  "description": "Abra contas separadas do Claude Desktop com um clique.",
+  "author": "Harlane Castro",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "pack": "electron-builder --dir",
+    "dist:mac": "electron-builder --mac --arm64 --x64",
+    "dist:win": "electron-builder --win --x64 --arm64",
+    "test:ui": "electron scripts/smoke.cjs",
+    "postinstall": "install-electron",
+    "icons": "node scripts/icons.cjs",
+    "test:desktop": "electron scripts/desktop-smoke.cjs"
+  },
+  "build": {
+    "appId": "com.claudeaccountlauncher.desktop",
+    "productName": "Claude Account Launcher",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/assets/icon.icns"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "src/assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "installerIcon": "src/assets/icon.ico",
+      "uninstallerIcon": "src/assets/icon.ico"
+    },
+    "dmg": {
+      "icon": "src/assets/icon.icns"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.1.0",
+    "electron-builder": "^26.18.0",
+    "png-to-ico": "^3.0.2",
+    "sharp": "^0.35.5"
+  }
+}
