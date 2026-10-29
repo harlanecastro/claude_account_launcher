@@ -11,7 +11,7 @@ function launchSpec(platform, executable) {
   throw new Error('Este aplicativo oferece suporte a macOS e Windows.');
 }
 function macProcesses(output, executable) {
-  const binary = path.join(executable, 'Contents', 'MacOS', 'Claude');
+  const binary = path.posix.join(executable, 'Contents', 'MacOS', 'Claude');
   return output.split(/\r?\n/).flatMap(line => {
     const match = line.trim().match(/^(\d+)\s+(.+)$/);
     if (!match || (match[2] !== binary && !match[2].startsWith(binary + ' '))) return [];
@@ -75,7 +75,7 @@ function createRuntime(platform, executable, execute = run) {
   return { list, focus, stop, start };
 }
 function nativeDirectory(platform, home, env, executable) {
-  if (platform === 'darwin') return path.join(home, 'Library', 'Application Support', 'Claude');
+  if (platform === 'darwin') return path.posix.join(home, 'Library', 'Application Support', 'Claude');
   if (platform === 'win32') {
     const packageName = executable.match(/[\\/]WindowsApps[\\/]([^\\/]+)/i)?.[1];
     if (packageName) {
